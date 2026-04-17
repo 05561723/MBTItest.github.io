@@ -1,100 +1,287 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>MBTI性格测试（25题精准版）</title>
+  <title>MBTI人格测试（25题版）</title>
   <style>
-   .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-    }
-   .question-card {
-      background: #f8f9fa;
-      border-radius: 10px;
-      padding: 25px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-   .option-btn {
-      display: block;
-      width: 100%;
-      padding: 12px 15px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      background: white;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.3s;
-      font-size: 16px;
-    }
-   .option-btn:hover {
-      background-color: #e9f5ff;
-      border-color: #b8daff;
-    }
-    #startBtn {
-      padding: 12px 30px;
-      font-size: 18px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    #startBtn:hover {
-      background: #0056b3;
-    }
-   .progress {
-      height: 8px;
-      background: #eee;
-      border-radius: 4px;
-      margin: 20px 0;
-      overflow: hidden;
-    }
-   .progress-bar {
-      height: 100%;
-      background: #007bff;
-      width: 0%;
-      transition: width 0.3s;
-    }
-   .result-analysis {
-      margin-top: 20px;
-      padding: 20px;
-      background: #f1f8e9;
-      border-radius: 8px;
-      line-height: 1.6;
-    }
-   .dimension-detail {
-      margin-top: 15px;
-      padding: 10px;
-      background: #e8f5e9;
-      border-radius: 5px;
-    }
+   .container { max-width: 800px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; }
+   .section { background: #f9f9f9; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+   .btn { padding: 12px 24px; background: #2c3e50; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+   .btn:hover { background: #34495e; }
+   .option { display: block; width: 100%; padding: 14px; margin: 10px 0; text-align: left; background: white; border: 1px solid #e0e0e0; border-radius: 6px; cursor: pointer; }
+   .option:hover { background: #f0f7ff; border-color: #b3d1ff; }
+   .progress { height: 10px; background: #eee; border-radius: 5px; margin: 20px 0; overflow: hidden; }
+   .progress-bar { height: 100%; background: #3498db; width: 0%; transition: width 0.3s; }
+   .hidden { display: none; }
+   .group-tag { display: inline-block; padding: 5px 12px; margin: 10px 0; border-radius: 20px; color: white; font-size: 14px; }
+   .analyst { background: #3498db; }
+   .diplomat { background: #e74c3c; }
+   .guardian { background: #2ecc71; }
+   .explorer { background: #f39c12; }
+   .career-list { list-style: none; padding: 0; }
+   .career-list li { background: #f0f0f0; padding: 8px; margin: 5px 0; border-radius: 4px; }
+   .note { background: #fff3cd; padding: 15px; border-radius: 6px; margin-top: 20px; }
   </style>
 </head>
 <body>
-  <div class="container" id="welcome">
-    <h1>MBTI性格测试</h1>
-    <p>本测试包含25题，覆盖四个核心维度，帮助你精准了解自己的人格类型。请根据真实感受选择答案。</p>
-    <button id="startBtn">开始测试</button>
-  </div>
-
-  <div class="container" id="quiz" style="display: none;">
-    <div class="progress">
-      <div class="progress-bar" id="progressBar"></div>
+  <div class="container">
+    <!-- 开始页 -->
+    <div id="start" class="section">
+      <h1>MBTI人格测试</h1>
+      <p>共25题，完成后将生成你的人格分析</p>
+      <button id="startBtn" class="btn">开始测试</button>
     </div>
-    <div id="questionContainer"></div>
+
+    <!-- 测试页 -->
+    <div id="quiz" class="section hidden">
+      <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+      <h3 id="questionText"></h3>
+      <div id="options"></div>
+    </div>
+
+    <!-- 结果页 -->
+    <div id="result" class="section hidden">
+      <h2>你的类型：<span id="type"></span></h2>
+      <span class="group-tag" id="groupTag"></span>
+      <h3>人格分析</h3>
+      <div id="analysis"></div>
+      <h3>适合职业</h3>
+      <ul class="career-list" id="careers"></ul>
+      <div class="note">
+        <h3>注意事项</h3>
+        <div id="notes"></div>
+      </div>
+      <button id="restartBtn" class="btn">重新测试</button>
+    </div>
   </div>
 
-  <div class="container" id="result" style="display: none;">
-    <h2>你的MBTI人格类型：<span id="resultType"></span></h2>
-    <div class="dimension-detail" id="dimensionDetail"></div>
-    <div class="result-analysis" id="resultAnalysis"></div>
-  </div>
+  <script>
+    // 禁用浏览器翻译（避免外部请求）
+    document.documentElement.setAttribute('translate', 'no');
 
-  <script src="app.js"></script>
-</body>
-</html>
+    window.onload = function() {
+      // 页面元素
+      const startSection = document.getElementById('start');
+      const quizSection = document.getElementById('quiz');
+      const resultSection = document.getElementById('result');
+      const startBtn = document.getElementById('startBtn');
+      const restartBtn = document.getElementById('restartBtn');
+      const questionText = document.getElementById('questionText');
+      const optionsContainer = document.getElementById('options');
+      const progressBar = document.getElementById('progressBar');
+      const typeEl = document.getElementById('type');
+      const groupTagEl = document.getElementById('groupTag');
+      const analysisEl = document.getElementById('analysis');
+      const careersEl = document.getElementById('careers');
+      const notesEl = document.getElementById('notes');
+
+      // 初始化数据
+      let currentQ = 0;
+      const scores = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
+      const totalQuestions = 25;
+
+      // 25题题库（每维度题数调整为：E/I 6题，S/N 6题，T/F 6题，J/P 7题）
+      const questions = [
+        // E/I 维度（6题）
+        {
+          text: '1. 在社交场合中，你更倾向于',
+          options: [
+            { text: '主动认识新朋友', value: { E:3, I:0 } },
+            { text: '与熟悉的人交流', value: { E:2, I:1 } },
+            { text: '观察为主，偶尔互动', value: { E:1, I:2 } },
+            { text: '尽量独处', value: { E:0, I:3 } }
+          ]
+        },
+        {
+          text: '2. 恢复精力的方式更倾向于',
+          options: [
+            { text: '参加聚会', value: { E:3, I:0 } },
+            { text: '与好友聊天', value: { E:2, I:1 } },
+            { text: '在家但允许有人陪伴', value: { E:1, I:2 } },
+            { text: '完全独处', value: { E:0, I:3 } }
+          ]
+        },
+        {
+          text: '3. 做重要决定时，你会',
+          options: [
+            { text: '广泛征求意见', value: { E:3, I:0 } },
+            { text: '询问少数信任的人', value: { E:2, I:1 } },
+            { text: '自己思考为主', value: { E:1, I:2 } },
+            { text: '独立决定', value: { E:0, I:3 } }
+          ]
+        },
+        {
+          text: '4. 你对公开演讲的感受是',
+          options: [
+            { text: '享受', value: { E:3, I:0 } },
+            { text: '不排斥', value: { E:2, I:1 } },
+            { text: '紧张但能应对', value: { E:1, I:2 } },
+            { text: '抗拒', value: { E:0, I:3 } }
+          ]
+        },
+        {
+          text: '5. 长时间独处后会感到',
+          options: [
+            { text: '无聊', value: { E:3, I:0 } },
+            { text: '有点闷', value: { E:2, I:1 } },
+            { text: '还行', value: { E:1, I:2 } },
+            { text: '舒适', value: { E:0, I:3 } }
+          ]
+        },
+        {
+          text: '6. 团队中你更擅长',
+          options: [
+            { text: '主导讨论', value: { E:3, I:0 } },
+            { text: '积极参与', value: { E:2, I:1 } },
+            { text: '默默完成任务', value: { E:1, I:2 } },
+            { text: '独立工作', value: { E:0, I:3 } }
+          ]
+        },
+
+        // S/N 维度（6题）
+        {
+          text: '7. 学习时更关注',
+          options: [
+            { text: '具体细节', value: { S:3, N:0 } },
+            { text: '实用方法', value: { S:2, N:1 } },
+            { text: '整体框架', value: { S:1, N:2 } },
+            { text: '抽象概念', value: { S:0, N:3 } }
+          ]
+        },
+        {
+          text: '8. 你更相信',
+          options: [
+            { text: '亲身经历', value: { S:3, N:0 } },
+            { text: '可靠案例', value: { S:2, N:1 } },
+            { text: '逻辑推理', value: { S:1, N:2 } },
+            { text: '直觉', value: { S:0, N:3 } }
+          ]
+        },
+        {
+          text: '9. 描述事情时会',
+          options: [
+            { text: '详述细节', value: { S:3, N:0 } },
+            { text: '讲清事实', value: { S:2, N:1 } },
+            { text: '说明意义', value: { S:1, N:2 } },
+            { text: '谈可能性', value: { S:0, N:3 } }
+          ]
+        },
+        {
+          text: '10. 对传统的态度',
+          options: [
+            { text: '遵循', value: { S:3, N:0 } },
+            { text: '保留有用部分', value: { S:2, N:1 } },
+            { text: '尝试新方法', value: { S:1, N:2 } },
+            { text: '打破限制', value: { S:0, N:3 } }
+          ]
+        },
+        {
+          text: '11. 做计划看重',
+          options: [
+            { text: '具体步骤', value: { S:3, N:0 } },
+            { text: '大致步骤', value: { S:2, N:1 } },
+            { text: '核心方向', value: { S:1, N:2 } },
+            { text: '长远愿景', value: { S:0, N:3 } }
+          ]
+        },
+        {
+          text: '12. 擅长解决',
+          options: [
+            { text: '具体问题', value: { S:3, N:0 } },
+            { text: '实际问题', value: { S:2, N:1 } },
+            { text: '复杂问题', value: { S:1, N:2 } },
+            { text: '抽象问题', value: { S:0, N:3 } }
+          ]
+        },
+
+        // T/F 维度（6题）
+        {
+          text: '13. 做决定时更关注',
+          options: [
+            { text: '逻辑事实', value: { T:3, F:0 } },
+            { text: '逻辑为主', value: { T:2, F:1 } },
+            { text: '兼顾情感', value: { T:1, F:2 } },
+            { text: '他人感受', value: { T:0, F:3 } }
+          ]
+        },
+        {
+          text: '14. 面对他人错误会',
+          options: [
+            { text: '直接指出', value: { T:3, F:0 } },
+            { text: '客观指出', value: { T:2, F:1 } },
+            { text: '委婉指出', value: { T:1, F:2 } },
+            { text: '不指出', value: { T:0, F:3 } }
+          ]
+        },
+        {
+          text: '15. 你认为公平是',
+          options: [
+            { text: '按规则办事', value: { T:3, F:0 } },
+            { text: '多数情况按规则', value: { T:2, F:1 } },
+            { text: '考虑个体差异', value: { T:1, F:2 } },
+            { text: '灵活照顾每个人', value: { T:0, F:3 } }
+          ]
+        },
+        {
+          text: '16. 评价他人看重',
+          options: [
+            { text: '能力结果', value: { T:3, F:0 } },
+            { text: '能力为主', value: { T:2, F:1 } },
+            { text: '能力与态度并重', value: { T:1, F:2 } },
+            { text: '态度与同理心', value: { T:0, F:3 } }
+          ]
+        },
+        {
+          text: '17. 解决冲突关注',
+          options: [
+            { text: '最优解', value: { T:3, F:0 } },
+            { text: '解决问题', value: { T:2, F:1 } },
+            { text: '平衡双方', value: { T:1, F:2 } },
+            { text: '安抚情绪', value: { T:0, F:3 } }
+          ]
+        },
+        {
+          text: '18. 接受批评的态度',
+          options: [
+            { text: '只要有理就接受', value: { T:3, F:0 } },
+            { text: '内容有理即可', value: { T:2, F:1 } },
+            { text: '在意语气', value: { T:1, F:2 } },
+            { text: '容易受伤', value: { T:0, F:3 } }
+          ]
+        },
+
+        // J/P 维度（7题）
+        {
+          text: '19. 你更喜欢',
+          options: [
+            { text: '有计划的生活', value: { J:3, P:0 } },
+            { text: '大致计划', value: { J:2, P:1 } },
+            { text: '灵活安排', value: { J:1, P:2 } },
+            { text: '顺其自然', value: { J:0, P:3 } }
+          ]
+        },
+        {
+          text: '20. 面对截止日期',
+          options: [
+            { text: '提前完成', value: { J:3, P:0 } },
+            { text: '按计划完成', value: { J:2, P:1 } },
+            { text: '临近完成', value: { J:1, P:2 } },
+            { text: '常拖延', value: { J:0, P:3 } }
+          ]
+        },
+        {
+          text: '21. 你对意外事件的态度',
+          options: [
+            { text: '感到烦躁', value: { J:3, P:0 } },
+            { text: '有点困扰', value: { J:2, P:1 } },
+            { text: '可以接受', value: { J:1, P:2 } },
+            { text: '觉得有趣', value: { J:0, P:3 } }
+          ]
+        },
+        {
+          text: '22. 你的生活空间通常',
+          options: [
+            { text: '非常整洁', value: { J:3, P:0 } },
+            { text: '比较整洁', value: { J:2, P:1 } },
+            { text: '有点乱但能找到东西', value: { J:1, P:2 } },
+            { text: '随性摆放', value: { J:0, P:3 } }
