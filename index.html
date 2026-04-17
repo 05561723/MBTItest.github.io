@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>MBTI性格测试（25题精准版）</title>
+  <style>
+   .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+   .question-card {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+   .option-btn {
+      display: block;
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.3s;
+      font-size: 16px;
+    }
+   .option-btn:hover {
+      background-color: #e9f5ff;
+      border-color: #b8daff;
+    }
+    #startBtn {
+      padding: 12px 30px;
+      font-size: 18px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    #startBtn:hover {
+      background: #0056b3;
+    }
+   .progress {
+      height: 8px;
+      background: #eee;
+      border-radius: 4px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+   .progress-bar {
+      height: 100%;
+      background: #007bff;
+      width: 0%;
+      transition: width 0.3s;
+    }
+   .result-analysis {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f1f8e9;
+      border-radius: 8px;
+      line-height: 1.6;
+    }
+   .dimension-detail {
+      margin-top: 15px;
+      padding: 10px;
+      background: #e8f5e9;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="welcome">
+    <h1>MBTI性格测试</h1>
+    <p>本测试包含25题，覆盖四个核心维度，帮助你精准了解自己的人格类型。请根据真实感受选择答案。</p>
+    <button id="startBtn">开始测试</button>
+  </div>
+
+  <div class="container" id="quiz" style="display: none;">
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div id="questionContainer"></div>
+  </div>
+
+  <div class="container" id="result" style="display: none;">
+    <h2>你的MBTI人格类型：<span id="resultType"></span></h2>
+    <div class="dimension-detail" id="dimensionDetail"></div>
+    <div class="result-analysis" id="resultAnalysis"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
