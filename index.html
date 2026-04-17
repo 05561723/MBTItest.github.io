@@ -2,63 +2,140 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>MBTI人格测试（25题版）</title>
+  <title>MBTI人格测试</title>
   <style>
-   .container { max-width: 800px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; }
-   .section { background: #f9f9f9; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
-   .btn { padding: 12px 24px; background: #2c3e50; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
-   .btn:hover { background: #34495e; }
-   .option { display: block; width: 100%; padding: 14px; margin: 10px 0; text-align: left; background: white; border: 1px solid #e0e0e0; border-radius: 6px; cursor: pointer; }
-   .option:hover { background: #f0f7ff; border-color: #b3d1ff; }
-   .progress { height: 10px; background: #eee; border-radius: 5px; margin: 20px 0; overflow: hidden; }
-   .progress-bar { height: 100%; background: #3498db; width: 0%; transition: width 0.3s; }
-   .hidden { display: none; }
-   .group-tag { display: inline-block; padding: 5px 12px; margin: 10px 0; border-radius: 20px; color: white; font-size: 14px; }
+   .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+   .section {
+      background: #f9f9f9;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+   .btn {
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+   .btn:hover {
+      background: #34495e;
+    }
+   .option {
+      display: block;
+      width: 100%;
+      padding: 14px 18px;
+      margin: 10px 0;
+      text-align: left;
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+   .option:hover {
+      background: #f0f7ff;
+      border-color: #b3d1ff;
+    }
+   .progress {
+      height: 10px;
+      background: #eee;
+      border-radius: 5px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+   .progress-bar {
+      height: 100%;
+      background: #3498db;
+      width: 0%;
+      transition: width 0.3s;
+    }
+   .hidden {
+      display: none;
+    }
+   .result-title {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+   .group-tag {
+      display: inline-block;
+      padding: 5px 12px;
+      margin: 10px 0;
+      border-radius: 20px;
+      color: white;
+      font-size: 14px;
+    }
    .analyst { background: #3498db; }
    .diplomat { background: #e74c3c; }
    .guardian { background: #2ecc71; }
    .explorer { background: #f39c12; }
-   .career-list { list-style: none; padding: 0; }
-   .career-list li { background: #f0f0f0; padding: 8px; margin: 5px 0; border-radius: 4px; }
-   .note { background: #fff3cd; padding: 15px; border-radius: 6px; margin-top: 20px; }
+   .career-list {
+      list-style-type: none;
+      padding: 0;
+    }
+   .career-list li {
+      background: #f0f0f0;
+      padding: 8px 12px;
+      margin: 5px 0;
+      border-radius: 4px;
+    }
+   .note {
+      background: #fff3cd;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- 开始页 -->
+    <!-- 开始页面 -->
     <div id="start" class="section">
-      <h1>MBTI人格测试</h1>
-      <p>共25题，完成后将生成你的人格分析</p>
+      <h1>MBTI人格类型测试</h1>
+      <p>本测试包含32题，将评估你的人格类型并提供详细分析。请根据真实感受选择最符合的选项。</p>
       <button id="startBtn" class="btn">开始测试</button>
     </div>
 
-    <!-- 测试页 -->
+    <!-- 测试页面 -->
     <div id="quiz" class="section hidden">
-      <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
       <h3 id="questionText"></h3>
       <div id="options"></div>
     </div>
 
-    <!-- 结果页 -->
+    <!-- 结果页面 -->
     <div id="result" class="section hidden">
-      <h2>你的类型：<span id="type"></span></h2>
+      <h2 class="result-title">你的MBTI人格类型：<span id="type"></span></h2>
       <span class="group-tag" id="groupTag"></span>
-      <h3>人格分析</h3>
+      
+      <h3>人格特质分析</h3>
       <div id="analysis"></div>
-      <h3>适合职业</h3>
+      
+      <h3>适合的职业</h3>
       <ul class="career-list" id="careers"></ul>
+      
       <div class="note">
         <h3>注意事项</h3>
         <div id="notes"></div>
       </div>
+      
       <button id="restartBtn" class="btn">重新测试</button>
     </div>
   </div>
 
   <script>
-    // 禁用浏览器翻译（避免外部请求）
-    document.documentElement.setAttribute('translate', 'no');
-
     window.onload = function() {
       // 页面元素
       const startSection = document.getElementById('start');
@@ -75,213 +152,173 @@
       const careersEl = document.getElementById('careers');
       const notesEl = document.getElementById('notes');
 
-      // 初始化数据
-      let currentQ = 0;
-      const scores = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
-      const totalQuestions = 25;
+      // 初始化变量
+      let currentQuestion = 0;
+      const scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
 
-      // 25题题库（每维度题数调整为：E/I 6题，S/N 6题，T/F 6题，J/P 7题）
+      // 32题题库（每维度8题）
       const questions = [
-        // E/I 维度（6题）
+        // 能量来源：E/I（8题）
         {
-          text: '1. 在社交场合中，你更倾向于',
+          text: '1. 在社交场合中，你通常',
           options: [
-            { text: '主动认识新朋友', value: { E:3, I:0 } },
-            { text: '与熟悉的人交流', value: { E:2, I:1 } },
-            { text: '观察为主，偶尔互动', value: { E:1, I:2 } },
-            { text: '尽量独处', value: { E:0, I:3 } }
+            { text: '主动与多人交谈，享受成为焦点', value: { E: 3, I: 0 } },
+            { text: '愿意交流，但更倾向于小团体互动', value: { E: 2, I: 1 } },
+            { text: '偶尔参与对话，大部分时间观察他人', value: { E: 1, I: 2 } },
+            { text: '尽量避免社交，更愿意独处', value: { E: 0, I: 3 } }
           ]
         },
         {
-          text: '2. 恢复精力的方式更倾向于',
+          text: '2. 当你需要恢复精力时，你会',
           options: [
-            { text: '参加聚会', value: { E:3, I:0 } },
-            { text: '与好友聊天', value: { E:2, I:1 } },
-            { text: '在家但允许有人陪伴', value: { E:1, I:2 } },
-            { text: '完全独处', value: { E:0, I:3 } }
+            { text: '约朋友聚会或参加活动', value: { E: 3, I: 0 } },
+            { text: '和1-2个亲密朋友聊天', value: { E: 2, I: 1 } },
+            { text: '在家做喜欢的事，但允许有人陪伴', value: { E: 1, I: 2 } },
+            { text: '完全独处，不被打扰', value: { E: 0, I: 3 } }
           ]
         },
         {
-          text: '3. 做重要决定时，你会',
+          text: '3. 你对新认识的人通常',
           options: [
-            { text: '广泛征求意见', value: { E:3, I:0 } },
-            { text: '询问少数信任的人', value: { E:2, I:1 } },
-            { text: '自己思考为主', value: { E:1, I:2 } },
-            { text: '独立决定', value: { E:0, I:3 } }
+            { text: '立刻热情交流，想了解对方所有事', value: { E: 3, I: 0 } },
+            { text: '主动打招呼，逐步了解对方', value: { E: 2, I: 1 } },
+            { text: '等待对方主动，再慢慢回应', value: { E: 1, I: 2 } },
+            { text: '尽量避免接触，除非必要', value: { E: 0, I: 3 } }
           ]
         },
         {
-          text: '4. 你对公开演讲的感受是',
+          text: '4. 处理重要决策时，你更倾向于',
           options: [
-            { text: '享受', value: { E:3, I:0 } },
-            { text: '不排斥', value: { E:2, I:1 } },
-            { text: '紧张但能应对', value: { E:1, I:2 } },
-            { text: '抗拒', value: { E:0, I:3 } }
+            { text: '与多人讨论，收集不同意见', value: { E: 3, I: 0 } },
+            { text: '和信任的人商量后做决定', value: { E: 2, I: 1 } },
+            { text: '自己思考为主，偶尔询问他人', value: { E: 1, I: 2 } },
+            { text: '完全独立思考，不依赖他人意见', value: { E: 0, I: 3 } }
           ]
         },
         {
-          text: '5. 长时间独处后会感到',
+          text: '5. 长时间独处后，你会感到',
           options: [
-            { text: '无聊', value: { E:3, I:0 } },
-            { text: '有点闷', value: { E:2, I:1 } },
-            { text: '还行', value: { E:1, I:2 } },
-            { text: '舒适', value: { E:0, I:3 } }
+            { text: '非常无聊，必须出门社交', value: { E: 3, I: 0 } },
+            { text: '有点闷，想找朋友小聚', value: { E: 2, I: 1 } },
+            { text: '还好，但偶尔需要简单互动', value: { E: 1, I: 2 } },
+            { text: '很舒适，甚至希望更久的独处', value: { E: 0, I: 3 } }
           ]
         },
         {
-          text: '6. 团队中你更擅长',
+          text: '6. 在团队合作中，你更擅长',
           options: [
-            { text: '主导讨论', value: { E:3, I:0 } },
-            { text: '积极参与', value: { E:2, I:1 } },
-            { text: '默默完成任务', value: { E:1, I:2 } },
-            { text: '独立工作', value: { E:0, I:3 } }
-          ]
-        },
-
-        // S/N 维度（6题）
-        {
-          text: '7. 学习时更关注',
-          options: [
-            { text: '具体细节', value: { S:3, N:0 } },
-            { text: '实用方法', value: { S:2, N:1 } },
-            { text: '整体框架', value: { S:1, N:2 } },
-            { text: '抽象概念', value: { S:0, N:3 } }
+            { text: '主导讨论，推动团队行动', value: { E: 3, I: 0 } },
+            { text: '积极参与，提供创意和建议', value: { E: 2, I: 1 } },
+            { text: '默默完成任务，必要时回应', value: { E: 1, I: 2 } },
+            { text: '独立完成分配的工作，避免过多互动', value: { E: 0, I: 3 } }
           ]
         },
         {
-          text: '8. 你更相信',
+          text: '7. 你对公开演讲的态度是',
           options: [
-            { text: '亲身经历', value: { S:3, N:0 } },
-            { text: '可靠案例', value: { S:2, N:1 } },
-            { text: '逻辑推理', value: { S:1, N:2 } },
-            { text: '直觉', value: { S:0, N:3 } }
+            { text: '非常享受，能自然发挥', value: { E: 3, I: 0 } },
+            { text: '不排斥，提前准备后可以做好', value: { E: 2, I: 1 } },
+            { text: '紧张但能完成，尽量避免', value: { E: 1, I: 2 } },
+            { text: '极度抗拒，会感到压力巨大', value: { E: 0, I: 3 } }
           ]
         },
         {
-          text: '9. 描述事情时会',
+          text: '8. 你更倾向于如何度过周末',
           options: [
-            { text: '详述细节', value: { S:3, N:0 } },
-            { text: '讲清事实', value: { S:2, N:1 } },
-            { text: '说明意义', value: { S:1, N:2 } },
-            { text: '谈可能性', value: { S:0, N:3 } }
-          ]
-        },
-        {
-          text: '10. 对传统的态度',
-          options: [
-            { text: '遵循', value: { S:3, N:0 } },
-            { text: '保留有用部分', value: { S:2, N:1 } },
-            { text: '尝试新方法', value: { S:1, N:2 } },
-            { text: '打破限制', value: { S:0, N:3 } }
-          ]
-        },
-        {
-          text: '11. 做计划看重',
-          options: [
-            { text: '具体步骤', value: { S:3, N:0 } },
-            { text: '大致步骤', value: { S:2, N:1 } },
-            { text: '核心方向', value: { S:1, N:2 } },
-            { text: '长远愿景', value: { S:0, N:3 } }
-          ]
-        },
-        {
-          text: '12. 擅长解决',
-          options: [
-            { text: '具体问题', value: { S:3, N:0 } },
-            { text: '实际问题', value: { S:2, N:1 } },
-            { text: '复杂问题', value: { S:1, N:2 } },
-            { text: '抽象问题', value: { S:0, N:3 } }
+            { text: '安排多种活动，填满时间', value: { E: 3, I: 0 } },
+            { text: '有1-2个社交活动，其余时间自由', value: { E: 2, I: 1 } },
+            { text: '少量简单活动，大部分时间独处', value: { E: 1, I: 2 } },
+            { text: '完全宅家，不安排任何外出', value: { E: 0, I: 3 } }
           ]
         },
 
-        // T/F 维度（6题）
+        // 感知方式：S/N（8题）
         {
-          text: '13. 做决定时更关注',
+          text: '9. 学习新知识时，你更关注',
           options: [
-            { text: '逻辑事实', value: { T:3, F:0 } },
-            { text: '逻辑为主', value: { T:2, F:1 } },
-            { text: '兼顾情感', value: { T:1, F:2 } },
-            { text: '他人感受', value: { T:0, F:3 } }
+            { text: '具体的案例、步骤和细节', value: { S: 3, N: 0 } },
+            { text: '实用方法，偶尔思考原理', value: { S: 2, N: 1 } },
+            { text: '整体框架，也会关注部分细节', value: { S: 1, N: 2 } },
+            { text: '抽象概念、原理和未来可能性', value: { S: 0, N: 3 } }
           ]
         },
         {
-          text: '14. 面对他人错误会',
+          text: '10. 你更相信哪种信息来源',
           options: [
-            { text: '直接指出', value: { T:3, F:0 } },
-            { text: '客观指出', value: { T:2, F:1 } },
-            { text: '委婉指出', value: { T:1, F:2 } },
-            { text: '不指出', value: { T:0, F:3 } }
+            { text: '亲身经历或确凿的数据', value: { S: 3, N: 0 } },
+            { text: '可靠的案例和经验总结', value: { S: 2, N: 1 } },
+            { text: '专家分析和逻辑推理', value: { S: 1, N: 2 } },
+            { text: '直觉和灵感，即使缺乏证据', value: { S: 0, N: 3 } }
           ]
         },
         {
-          text: '15. 你认为公平是',
+          text: '11. 你描述一件事时，更倾向于',
           options: [
-            { text: '按规则办事', value: { T:3, F:0 } },
-            { text: '多数情况按规则', value: { T:2, F:1 } },
-            { text: '考虑个体差异', value: { T:1, F:2 } },
-            { text: '灵活照顾每个人', value: { T:0, F:3 } }
+            { text: '详细说明时间、地点和具体过程', value: { S: 3, N: 0 } },
+            { text: '讲清主要事实，附带少量感受', value: { S: 2, N: 1 } },
+            { text: '说明事件意义，简要提事实', value: { S: 1, N: 2 } },
+            { text: '重点讲背后的含义和可能性', value: { S: 0, N: 3 } }
           ]
         },
         {
-          text: '16. 评价他人看重',
+          text: '12. 你对“传统”的态度是',
           options: [
-            { text: '能力结果', value: { T:3, F:0 } },
-            { text: '能力为主', value: { T:2, F:1 } },
-            { text: '能力与态度并重', value: { T:1, F:2 } },
-            { text: '态度与同理心', value: { T:0, F:3 } }
+            { text: '尊重并遵循，认为有实际价值', value: { S: 3, N: 0 } },
+            { text: '部分接受，有用的就保留', value: { S: 2, N: 1 } },
+            { text: '不排斥，但更愿意尝试新方法', value: { S: 1, N: 2 } },
+            { text: '认为限制创新，倾向于打破', value: { S: 0, N: 3 } }
           ]
         },
         {
-          text: '17. 解决冲突关注',
+          text: '13. 你做计划时更看重',
           options: [
-            { text: '最优解', value: { T:3, F:0 } },
-            { text: '解决问题', value: { T:2, F:1 } },
-            { text: '平衡双方', value: { T:1, F:2 } },
-            { text: '安抚情绪', value: { T:0, F:3 } }
+            { text: '具体可行的步骤和细节', value: { S: 3, N: 0 } },
+            { text: '明确的目标和大致步骤', value: { S: 2, N: 1 } },
+            { text: '核心方向，灵活调整步骤', value: { S: 1, N: 2 } },
+            { text: '长远愿景，不纠结具体步骤', value: { S: 0, N: 3 } }
           ]
         },
         {
-          text: '18. 接受批评的态度',
+          text: '14. 你更擅长解决哪种问题',
           options: [
-            { text: '只要有理就接受', value: { T:3, F:0 } },
-            { text: '内容有理即可', value: { T:2, F:1 } },
-            { text: '在意语气', value: { T:1, F:2 } },
-            { text: '容易受伤', value: { T:0, F:3 } }
+            { text: '具体的、有明确答案的问题', value: { S: 3, N: 0 } },
+            { text: '实际问题，需要结合经验', value: { S: 2, N: 1 } },
+            { text: '复杂问题，需要逻辑推理', value: { S: 1, N: 2 } },
+            { text: '抽象的、开放性的问题', value: { S: 0, N: 3 } }
+          ]
+        },
+        {
+          text: '15. 你对“细节”的态度是',
+          options: [
+            { text: '非常重要，必须精确无误', value: { S: 3, N: 0 } },
+            { text: '重要，尽量做好但不苛求', value: { S: 2, N: 1 } },
+            { text: '不太在意，不影响整体即可', value: { S: 1, N: 2 } },
+            { text: '无关紧要，关注整体即可', value: { S: 0, N: 3 } }
+          ]
+        },
+        {
+          text: '16. 你更喜欢哪种书籍/电影',
+          options: [
+            { text: '纪实、历史、技能类', value: { S: 3, N: 0 } },
+            { text: '现实题材小说、传记', value: { S: 2, N: 1 } },
+            { text: '科幻、悬疑、哲理类', value: { S: 1, N: 2 } },
+            { text: '奇幻、抽象、未来题材', value: { S: 0, N: 3 } }
           ]
         },
 
-        // J/P 维度（7题）
+        // 判断标准：T/F（8题）
         {
-          text: '19. 你更喜欢',
+          text: '17. 做决定时，你更倾向于',
           options: [
-            { text: '有计划的生活', value: { J:3, P:0 } },
-            { text: '大致计划', value: { J:2, P:1 } },
-            { text: '灵活安排', value: { J:1, P:2 } },
-            { text: '顺其自然', value: { J:0, P:3 } }
+            { text: '完全依据逻辑和客观事实', value: { T: 3, F: 0 } },
+            { text: '以逻辑为主，偶尔考虑情感', value: { T: 2, F: 1 } },
+            { text: '兼顾情感和逻辑，平衡两者', value: { T: 1, F: 2 } },
+            { text: '优先考虑他人感受和人际关系', value: { T: 0, F: 3 } }
           ]
         },
         {
-          text: '20. 面对截止日期',
+          text: '18. 面对他人的错误，你会',
           options: [
-            { text: '提前完成', value: { J:3, P:0 } },
-            { text: '按计划完成', value: { J:2, P:1 } },
-            { text: '临近完成', value: { J:1, P:2 } },
-            { text: '常拖延', value: { J:0, P:3 } }
-          ]
-        },
-        {
-          text: '21. 你对意外事件的态度',
-          options: [
-            { text: '感到烦躁', value: { J:3, P:0 } },
-            { text: '有点困扰', value: { J:2, P:1 } },
-            { text: '可以接受', value: { J:1, P:2 } },
-            { text: '觉得有趣', value: { J:0, P:3 } }
-          ]
-        },
-        {
-          text: '22. 你的生活空间通常',
-          options: [
-            { text: '非常整洁', value: { J:3, P:0 } },
-            { text: '比较整洁', value: { J:2, P:1 } },
-            { text: '有点乱但能找到东西', value: { J:1, P:2 } },
-            { text: '随性摆放', value: { J:0, P:3 } }
+            { text: '直接指出问题，不考虑语气', value: { T: 3, F: 0 } },
+            { text: '客观指出错误，语气尽量温和', value: { T: 2, F: 1 } },
+            { text: '先肯定再指出，
